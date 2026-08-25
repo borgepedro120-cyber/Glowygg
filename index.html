@@ -20,12 +20,19 @@
     min-height: 100vh;
     font-family: 'Inter', sans-serif;
     background: radial-gradient(circle at 20% 20%, #1a6b74, var(--teal-deep) 60%);
+    background-size: 200% 200%;
+    animation: breathe 8s ease-in-out infinite;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 24px;
     overflow: hidden;
     position: relative;
+  }
+  @keyframes breathe {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
   }
   .drop {
     position: absolute;
@@ -38,6 +45,54 @@
     0%, 100% { transform: translateY(0) translateX(0); }
     50% { transform: translateY(-30px) translateX(10px); }
   }
+
+  .logo-vidro {
+    position: relative;
+    z-index: 2;
+    margin: 0 auto 20px;
+    width: fit-content;
+    padding: 14px 32px;
+    border-radius: 40px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.35), rgba(255,255,255,0.08));
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.4);
+    box-shadow:
+      0 8px 32px rgba(0,0,0,0.25),
+      inset 0 1px 1px rgba(255,255,255,0.6),
+      inset 0 -1px 1px rgba(0,0,0,0.1);
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: aparecerLogo 0.7s ease forwards;
+  }
+  .logo-vidro::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -30%;
+    width: 60%;
+    height: 200%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.5), transparent);
+    animation: brilhoVidro 4s ease-in-out infinite;
+  }
+  .logo-vidro span {
+    position: relative;
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  }
+  @keyframes aparecerLogo {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes brilhoVidro {
+    0% { transform: translateX(-100%) rotate(20deg); }
+    50%, 100% { transform: translateX(250%) rotate(20deg); }
+  }
+
   .card {
     position: relative;
     background: rgba(253, 250, 244, 0.92);
@@ -180,6 +235,8 @@
   <div class="drop" style="width:30px;height:30px;top:70%;left:80%;animation-delay:2s;"></div>
   <div class="drop" style="width:45px;height:45px;top:80%;left:20%;animation-delay:4s;"></div>
   <div class="drop" style="width:20px;height:20px;top:20%;left:75%;animation-delay:1s;"></div>
+
+  <div class="logo-vidro"><span>Glowygg</span></div>
 
   <div class="card">
     <div class="mascote">
