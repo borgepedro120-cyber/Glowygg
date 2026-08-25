@@ -291,6 +291,12 @@
     }
   });
 
+  const btnGoogle = document.getElementById('btn-google');
+  btnGoogle.addEventListener('click', async () => {
+    const { error } = await supabaseClient.auth.signInWithOAuth({ provider: 'google' });
+    if (error) mostrarMensagem(error.message, 'error');
+  });
+
   const pupilaEsq = document.getElementById('pupila-esq');
   const pupilaDir = document.getElementById('pupila-dir');
   const maoEsq = document.getElementById('mao-esq');
@@ -321,4 +327,4 @@
   });
 </script>
 </body>
-</html>
+  </html>
