@@ -185,3 +185,111 @@
   </div>
 
   <button class="btn-admin-flutuante" id="btn-admin">⚙️ Admin</button>
+  <script>
+  const SUPABASE_URL = 'https://uupqiqxsnwwzspqhyalq.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1cHFpcXhzbnd3enNwcWh5YWxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MTg5MzcsImV4cCI6MjEwMzE5NDkzN30.RZX7e6QaR9lCEwaxWXJZzxJyUkbjC6rPubpQyI7ln5o';
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const EMAIL_ADMIN = 'borgepedro120@gmail.com';
+
+  const NOMES_TIPO = { oleosa: 'Pele oleosa', seca: 'Pele seca', mista: 'Pele mista', normal: 'Pele normal' };
+  const NOMES_FOCO = {
+    acne: 'Foco em controlar acne e cravos',
+    manchas: 'Foco em uniformizar manchas',
+    rugas: 'Foco em linhas e firmeza',
+    poros: 'Foco em refinar poros'
+  };
+
+  async function buscarConteudo() {
+    const { data, error } = await supabaseClient.from('conteudo_rotina').select('chave, nome, descricao');
+    if (error || !data) return {};
+    const mapa = {};
+    data.forEach(item => { mapa[item.chave] = { nome: item.nome, desc: item.descricao }; });
+    return mapa;
+  }
+
+  function montarRotina(conteudo, tipo, foco, nivelAtual) {
+    const manha = [];
+    const noite = [];
+
+    const limpeza = conteudo[`limpeza_${tipo}`] || conteudo['limpeza_normal'];
+    const hidratante = conteudo[`hidratante_${tipo}`] || conteudo['hidratante_normal'];
+
+    if (limpeza) { manha.push(limpeza); noite.push(limpeza); }
+
+    if (nivelAtual !== 'nenhuma') {
+      const tratManha = conteudo[`trat_manha_${foco}`];
+      if (tratManha) manha.push(tratManha);
+    }
+
+    if (hidratante) manha.push(hidratante);
+    if (conteudo['protetor_solar']) manha.push(conteudo['protetor_solar']);
+
+    if (nivelAtual === 'completa') {
+      const tratNoite = conteudo[`trat_noite_${foco}`];
+      if (tratNoite) noite.push(tratNoite);
+    }
+    if (hidratante) noite.push(hidratante);
+
+    return { manha, noite };
+  }
+
+  function renderizarLista(el, passos) {
+    el.innerHTML = passos.map((p, i) => `
+      <div class="passo" style="animation-delay: ${i * 0.1}s">
+        <div class="num">${i + 1}</div>
+        <div class="conteudo">
+          <strong>${p.nome}</strong>
+          <span>${p.desc}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function iniciar() {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) {
+      window.location.href = 'index.html';
+      return;
+    }
+    const meta = user.user_metadata || {};
+    if (!meta.onboarding_concluido) {
+      window.location.href = 'onboarding.html';
+      return;
+    }
+
+    const tipo = meta.tipo_pele || 'normal';
+    const foco = meta.preocupacao || 'poros';
+    const nivel = meta.rotina_atual || 'basica';
+
+    document.getElementById('resumo-tipo').textContent = NOMES_TIPO[tipo];
+    document.getElementById('resumo-foco').textContent = NOMES_FOCO[foco];
+
+    const conteudo = await buscarConteudo();
+    const { manha, noite } = montarRotina(conteudo, tipo, foco, nivel);
+    renderizarLista(document.getElementById('lista-manha'), manha);
+    renderizarLista(document.getElementById('lista-noite'), noite);
+
+    if (user.email === EMAIL_ADMIN) {
+      const btnAdmin = document.getElementById('btn-admin');
+      btnAdmin.style.display = 'flex';
+      btnAdmin.addEventListener('click', () => { window.location.href = 'admin.html'; });
+    }
+
+    document.getElementById('carregando').style.display = 'none';
+    document.getElementById('conteudo').style.display = 'block';
+  }
+
+  document.getElementById('btn-sair').addEventListener('click', async () => {
+    await supabaseClient.auth.signOut();
+    window.location.href = 'index.html';
+  });
+
+  document.getElementById('btn-refazer').addEventListener('click', () => {
+    window.location.href = 'onboarding.html';
+  });
+
+  iniciar();
+</script>
+</body>
+</html>
