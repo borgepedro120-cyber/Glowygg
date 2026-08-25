@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sua rotina — Glowy</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --teal-deep: #0e4f57;
+    --teal-mid: #17828d;
+    --cream: #fdfaf4;
+    --gold: #d4a24c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    background: #f6f1e7;
+    color: #3a352c;
+    padding: 28px 20px 60px;
+  }
+  .topo {
+    max-width: 480px;
+    margin: 0 auto 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .topo h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    color: var(--teal-deep);
+    margin: 0;
+  }
+  .btn-sair {
+    background: none;
+    border: 1.5px solid #d8d0c0;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 0.82rem;
+    color: #8a8478;
+    cursor: pointer;
+  }
+  .resumo {
+    max-width: 480px;
+    margin: 0 auto 28px;
+    background: var(--teal-deep);
+    color: #fff;
+    border-radius: 18px;
+    padding: 20px 22px;
+  }
+  .resumo p {
+    margin: 0;
+    font-size: 0.88rem;
+    opacity: 0.85;
+  }
+  .resumo strong {
+    font-family: 'Fraunces', serif;
+    font-size: 1.2rem;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .secao {
+    max-width: 480px;
+    margin: 0 auto 24px;
+  }
+  .secao-titulo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--teal-mid);
+    margin-bottom: 12px;
+  }
+  .passo {
+    display: flex;
+    gap: 14px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    border: 1px solid #ece5d5;
+  }
+  .passo .num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .passo .conteudo strong {
+    display: block;
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+  }
+  .passo .conteudo span {
+    font-size: 0.85rem;
+    color: #8a8478;
+  }
+  .carregando {
+    max-width: 480px;
+    margin: 60px auto;
+    text-align: center;
+    color: #8a8478;
+  }
+</style>
+</head>
+<body>
+  <div id="carregando" class="carregando">Montando sua rotina...</div>
+
+  <div id="conteudo" style="display:none;">
+    <div class="topo">
+      <h1>Sua rotina</h1>
+      <button class="btn-sair" id="btn-sair">Sair</button>
+    </div>
+
+    <div class="resumo">
+      <strong id="resumo-tipo"></strong>
+      <p id="resumo-foco"></p>
+    </div>
+
+    <div class="secao">
+      <div class="secao-titulo">☀️ Manhã</div>
+      <div id="lista-manha"></div>
+    </div>
+
+    <div class="secao">
+      <div class="secao-titulo">🌙 Noite</div>
+      <div id="lista-noite"></div>
+    </div>
+  </div>
+
+<script>
+  const SUPABASE_URL = 'https://uupqiqxsnwwzspqhyalq.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1cHFpcXhzbnd3enNwcWh5YWxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MTg5MzcsImV4cCI6MjEwMzE5NDkzN30.RZX7e6QaR9lCEwaxWXJZzxJyUkbjC6rPubpQyI7ln5o';
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const NOMES_TIPO = { oleosa: 'Pele oleosa', seca: 'Pele seca', mista: 'Pele mista', normal: 'Pele normal' };
+  const NOMES_FOCO = {
+    acne: 'Foco em controlar acne e cravos',
+    manchas: 'Foco em uniformizar manchas',
+    rugas: 'Foco em linhas e firmeza',
+    poros: 'Foco em refinar poros'
+  };
+
+  function limpezaPorTipo(tipo) {
+    if (tipo === 'oleosa') return { nome: 'Gel de limpeza facial', desc: 'Espumante, remove oleosidade sem ressecar' };
+    if (tipo === 'seca') return { nome: 'Leite ou creme de limpeza', desc: 'Sem espuma, preserva a barreira da pele' };
+    return { nome: 'Sabonete facial suave', desc: 'Equilibrado, para uso diário' };
+  }
+
+  function hidratantePorTipo(tipo) {
+    if (tipo === 'oleosa') return { nome: 'Hidratante em gel oil-free', desc: 'Leve, não obstrui os poros' };
+    if (tipo === 'seca') return { nome: 'Hidratante em creme nutritivo', desc: 'Rico em emolientes' };
+    return { nome: 'Hidratante em loção', desc: 'Textura leve para uso diário' };
+  }
+
+  function tratamentoPorFoco(foco, periodo) {
+    const mapa = {
+      acne: {
+        manha: { nome: 'Sérum com niacinamida', desc: 'Controla oleosidade e reduz vermelhidão' },
+        noite: { nome: 'Ácido salicílico (2-3x/semana)', desc: 'Desobstrui poros e previne cravos' }
+      },
+      manchas: {
+        manha: { nome: 'Sérum com vitamina C', desc: 'Uniformiza o tom e protege dos radicais livres' },
+        noite: { nome: 'Ácido tranexâmico ou alfa arbutin', desc: 'Atua nas manchas ao longo da noite' }
+      },
+      rugas: {
+        manha: { nome: 'Sérum antioxidante', desc: 'Protege contra o envelhecimento precoce' },
+        noite: { nome: 'Retinol (2-3x/semana)', desc: 'Estimula renovação celular e colágeno' }
+      },
+      poros: {
+        manha: { nome: 'Sérum com niacinamida', desc: 'Ajuda a refinar a aparência dos poros' },
+        noite: { nome: 'Ácido salicílico ou glicólico', desc: 'Esfolia suavemente e desobstrui poros' }
+      }
+    };
+    return mapa[foco]?.[periodo] || null;
+  }
+
+  function montarRotina(tipo, foco, nivelAtual) {
+    const manha = [];
+    const noite = [];
+
+    manha.push(limpezaPorTipo(tipo));
+    noite.push(limpezaPorTipo(tipo));
+
+    if (nivelAtual !== 'nenhuma') {
+      const tratManha = tratamentoPorFoco(foco, 'manha');
+      if (tratManha) manha.push(tratManha);
+    }
+
+    manha.push(hidratantePorTipo(tipo));
+    manha.push({ nome: 'Protetor solar FPS 50+', desc: 'Último passo, sempre pela manhã' });
+
+    if (nivelAtual === 'completa') {
+      const tratNoite = tratamentoPorFoco(foco, 'noite');
+      if (tratNoite) noite.push(tratNoite);
+    }
+    noite.push(hidratantePorTipo(tipo));
+
+    return { manha, noite };
+  }
+
+  function renderizarLista(el, passos) {
+    el.innerHTML = passos.map((p, i) => `
+      <div class="passo">
+        <div class="num">${i + 1}</div>
+        <div class="conteudo">
+          <strong>${p.nome}</strong>
+          <span>${p.desc}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function iniciar() {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) {
+      window.location.href = 'index.html';
+      return;
+    }
+    const meta = user.user_metadata || {};
+    if (!meta.onboarding_concluido) {
+      window.location.href = 'onboarding.html';
+      return;
+    }
+
+    const tipo = meta.tipo_pele || 'normal';
+    const foco = meta.preocupacao || 'poros';
+    const nivel = meta.rotina_atual || 'basica';
+
+    document.getElementById('resumo-tipo').textContent = NOMES_TIPO[tipo];
+    document.getElementById('resumo-foco').textContent = NOMES_FOCO[foco];
+
+    const { manha, noite } = montarRotina(tipo, foco, nivel);
+    renderizarLista(document.getElementById('lista-manha'), manha);
+    renderizarLista(document.getElementById('lista-noite'), noite);
+
+    document.getElementById('carregando').style.display = 'none';
+    document.getElementById('conteudo').style.display = 'block';
+  }
+
+  document.getElementById('btn-sair').addEventListener('click', async () => {
+    await supabaseClient.auth.signOut();
+    window.location.href = 'index.html';
+  });
+
+  iniciar();
+</script>
+</body>
+</html>
