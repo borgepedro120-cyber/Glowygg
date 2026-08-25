@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia — Glowy</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --teal-deep:#0e4f57; --teal-mid:#17828d; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: #f4f2ec;
+    color: #241f1a;
+    padding-bottom: 60px;
+  }
+  .banner { width: 100%; height: 220px; object-fit: cover; display: block; }
+  .miolo { max-width: 560px; margin: 0 auto; padding: 24px 20px 0; }
+  .voltar {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--teal-mid); font-size: 0.78rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    text-decoration: none; margin-bottom: 16px;
+  }
+  h1.titulo {
+    font-family: 'Fraunces', serif; font-size: 1.9rem; font-weight: 700;
+    margin: 0 0 14px; line-height: 1.15;
+  }
+  .tags { display: flex; gap: 8px; margin-bottom: 18px; }
+  .tag { font-size: 0.75rem; font-weight: 700; padding: 6px 14px; border-radius: 20px; background:#dcefe6; color:#1e6b4d; }
+  .tag.tempo { background:#ece7dc; color:#6b6656; }
+  .descricao { color:#55503f; line-height:1.6; margin-bottom:28px; }
+  .card-passo {
+    background:#fff; border-radius:18px; padding:20px;
+    margin-bottom:16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 8px 20px rgba(0,0,0,0.04);
+    opacity:0; transform: translateY(14px); animation: subir 0.5s ease forwards;
+  }
+  @keyframes subir { to { opacity:1; transform: translateY(0); } }
+  .card-passo .num {
+    width:30px; height:30px; border-radius:50%; background:#dcefe6; color:#1e6b4d;
+    font-weight:700; font-size:0.9rem; display:flex; align-items:center; justify-content:center; margin-bottom:12px;
+  }
+  .card-passo strong { display:block; font-size:1.05rem; margin-bottom:6px; }
+  .card-passo span { color:#6b6656; font-size:0.9rem; line-height:1.5; }
+</style>
+</head>
+<body>
+  <img class="banner" id="banner" src="" alt="">
+  <div class="miolo">
+    <a class="voltar" href="biblioteca.html">← Biblioteca</a>
+    <h1 class="titulo" id="titulo"></h1>
+    <div class="tags">
+      <span class="tag" id="tag-nivel"></span>
+      <span class="tag tempo" id="tag-tempo"></span>
+    </div>
+    <p class="descricao" id="descricao"></p>
+    <div id="lista-passos"></div>
+  </div>
+
+<script>
+  const guias = {
+    manchas: {
+      img: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1200&q=80',
+      nivel: 'Avançado', tempo: '15 min',
+      titulo: 'Reset de Manchas e Marcas',
+      desc: 'Marcas vermelhas e escuras somem quando você ataca dos dois lados: bloqueia a produção de melanina e acelera a renovação celular.',
+      passos: [
+        { t: 'Diagnóstico da mancha', d: 'Marca vermelha (PIE) responde a vitamina C e proteção solar. Marca marrom (PIH) responde a niacinamida, alfa-arbutina e ácido tranexâmico.' },
+        { t: 'Manhã: vitamina C 10-15%', d: 'Aplique na pele seca, aguarde 2 minutos antes do próximo passo.' },
+        { t: 'Manhã: FPS 50 com cor', d: 'Filtros com pigmento bloqueiam luz visível, principal gatilho do melasma.' },
+        { t: 'Noite A: alfa-arbutina + niacinamida', d: 'Combinação suave que reduz a mancha sem irritar. Use em noites alternadas.' },
+        { t: 'Noite B: retinoide em dose baixa', d: 'Acelera a renovação celular e clareia gradualmente.' }
+      ]
+    },
+    oleosidade: {
+      img: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=1200&q=80',
+      nivel: 'Iniciante', tempo: '5 min',
+      titulo: 'Controle de Oleosidade',
+      desc: 'Passos simples para equilibrar a produção de oleosidade sem ressecar a pele.',
+      passos: [
+        { t: 'Limpeza com gel espumante', d: 'Remove o excesso de oleosidade sem agredir a barreira da pele.' },
+        { t: 'Tônico com niacinamida', d: 'Ajuda a regular a produção de sebo ao longo do dia.' },
+        { t: 'Hidratante oil-free', d: 'Mantém a pele hidratada sem pesar ou obstruir poros.' }
+      ]
+    },
+    cansada: {
+      img: 'https://images.unsplash.com/photo-1519824145371-296894a0daa9?auto=format&fit=crop&w=1200&q=80',
+      nivel: 'Intermediário', tempo: '10 min',
+      titulo: 'SOS Pele Cansada',
+      desc: 'Recupere o viço em poucos dias com essa combinação de ativos revitalizantes.',
+      passos: [
+        { t: 'Esfoliação suave', d: '1-2x por semana, remove células mortas e revela pele mais viva.' },
+        { t: 'Sérum com vitamina C', d: 'Ilumina o tom e dá aquele efeito de "pele descansada".' },
+        { t: 'Máscara hidratante', d: '2x por semana, repõe água e nutrientes rapidamente.' }
+      ]
+    },
+    glowup: {
+      img: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=1200&q=80',
+      nivel: 'Todos os níveis', tempo: '7 min',
+      titulo: 'Glow Up Rápido',
+      desc: 'Rotina expressa para um brilho saudável antes de um evento importante.',
+      passos: [
+        { t: 'Limpeza rápida', d: 'Remove impurezas sem ressecar antes da maquiagem ou saída.' },
+        { t: 'Sérum iluminador', d: 'Ativos com efeito glow imediato na aplicação.' },
+        { t: 'Hidratante com toque seco', d: 'Prepara a pele para maquiagem ou uso sem produtos.' }
+      ]
+    }
+  };
+
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  const guia = guias[id];
+
+  if (guia) {
+    document.getElementById('banner').src = guia.img;
+    document.getElementById('titulo').textContent = guia.titulo;
+    document.getElementById('tag-nivel').textContent = guia.nivel;
+    document.getElementById('tag-tempo').textContent = guia.tempo;
+    document.getElementById('descricao').textContent = guia.desc;
+    document.getElementById('lista-passos').innerHTML = guia.passos.map((p, i) => `
+      <div class="card-passo" style="animation-delay:${i * 0.08}s">
+        <div class="num">${i + 1}</div>
+        <strong>${p.t}</strong>
+        <span>${p.d}</span>
+      </div>
+    `).join('');
+  } else {
+    document.getElementById('titulo').textContent = 'Dica não encontrada';
+  }
+</script>
+</body>
+</html>
