@@ -298,7 +298,10 @@
 
   const btnGoogle = document.getElementById('btn-google');
   btnGoogle.addEventListener('click', async () => {
-    const { error } = await supabaseClient.auth.signInWithOAuth({ provider: 'google' });
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin + '/onboarding.html' }
+    });
     if (error) mostrarMensagem(error.message, 'error');
   });
 
