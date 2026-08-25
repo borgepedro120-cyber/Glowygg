@@ -204,4 +204,34 @@
 
 <script>
   const pupilaEsq = document.getElementById('pupila-esq');
-  const pupilaDir = document.getElementById('pupila-dir')
+  const pupilaDir = document.getElementById('pupila-dir');
+  const maoEsq = document.getElementById('mao-esq');
+  const maoDir = document.getElementById('mao-dir');
+  const svg = document.getElementById('mascote-svg');
+  const senhaInput = document.getElementById('senha');
+
+  document.addEventListener('mousemove', (e) => {
+    const rect = svg.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const angle = Math.atan2(e.clientY - cy, e.clientX - cx);
+    const dist = 3;
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist;
+    pupilaEsq.setAttribute('cx', 42 + dx);
+    pupilaEsq.setAttribute('cy', 55 + dy);
+    pupilaDir.setAttribute('cx', 78 + dx);
+    pupilaDir.setAttribute('cy', 55 + dy);
+  });
+
+  senhaInput.addEventListener('focus', () => {
+    maoEsq.style.opacity = '1';
+    maoDir.style.opacity = '1';
+  });
+  senhaInput.addEventListener('blur', () => {
+    maoEsq.style.opacity = '0';
+    maoDir.style.opacity = '0';
+  });
+</script>
+</body>
+</html>
