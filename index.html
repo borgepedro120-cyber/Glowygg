@@ -4,40 +4,52 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Entrar na Glowy — sua rotina de pele</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
     --teal-deep: #0e4f57;
-    --teal-mid: #14707a;
-    --cream: #fbf7f0;
+    --teal-mid: #17828d;
+    --cream: #fdfaf4;
     --gold: #d4a24c;
+    --blush: #f2c9b8;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
     min-height: 100vh;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(160deg, var(--teal-deep) 0%, var(--teal-mid) 100%);
-    background-size: 200% 200%;
-    animation: breathe 8s ease-in-out infinite;
+    font-family: 'Inter', sans-serif;
+    background: radial-gradient(circle at 20% 20%, #1a6b74, var(--teal-deep) 60%);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 24px;
+    overflow: hidden;
+    position: relative;
   }
-  @keyframes breathe {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
+  .drop {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), rgba(255,255,255,0.05));
+    filter: blur(1px);
+    animation: float 10s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    50% { transform: translateY(-30px) translateX(10px); }
   }
   .card {
-    background: var(--cream);
-    border-radius: 20px;
-    padding: 40px 32px;
+    position: relative;
+    background: rgba(253, 250, 244, 0.92);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    padding: 44px 34px;
     width: 100%;
     max-width: 380px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.3);
     opacity: 0;
-    transform: translateY(20px);
-    animation: rise 0.7s ease-out forwards;
+    transform: translateY(24px);
+    animation: rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    z-index: 1;
   }
   @keyframes rise {
     to { opacity: 1; transform: translateY(0); }
@@ -45,92 +57,101 @@
   .mascote {
     display: flex;
     justify-content: center;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
   }
   .logo {
     text-align: center;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
   }
   .logo span {
-    font-size: 1.9rem;
-    font-weight: 700;
+    font-family: 'Fraunces', serif;
+    font-size: 2.1rem;
+    font-weight: 600;
     color: var(--teal-deep);
     letter-spacing: -0.5px;
   }
   .subtitle {
     text-align: center;
-    color: #6b6b6b;
-    font-size: 0.95rem;
-    margin-bottom: 28px;
+    color: #8a8478;
+    font-size: 0.92rem;
+    margin-bottom: 30px;
+    font-style: italic;
   }
   label {
     display: block;
-    font-size: 0.85rem;
+    font-size: 0.78rem;
     font-weight: 600;
-    color: var(--teal-deep);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--teal-mid);
     margin-bottom: 6px;
-    margin-top: 16px;
+    margin-top: 18px;
   }
   input {
     width: 100%;
-    padding: 12px 14px;
-    border: 1.5px solid #e0dcd3;
-    border-radius: 10px;
+    padding: 13px 14px;
+    border: none;
+    border-bottom: 2px solid #e5ddc9;
+    border-radius: 4px 4px 0 0;
     font-size: 0.95rem;
-    background: #fff;
+    background: rgba(255,255,255,0.6);
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.25s, background 0.25s;
   }
   input:focus {
-    border-color: var(--teal-mid);
+    border-color: var(--gold);
+    background: rgba(255,255,255,0.9);
   }
   .btn-primary {
     width: 100%;
-    padding: 13px;
-    margin-top: 24px;
-    background: var(--teal-deep);
+    padding: 14px;
+    margin-top: 28px;
+    background: linear-gradient(135deg, var(--teal-mid), var(--teal-deep));
     color: #fff;
     border: none;
-    border-radius: 10px;
+    border-radius: 30px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 8px 20px rgba(14,79,87,0.35);
   }
   .btn-primary:hover {
-    background: var(--teal-mid);
-    transform: scale(1.02);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(14,79,87,0.45);
   }
   .divider {
     display: flex;
     align-items: center;
-    margin: 20px 0;
-    color: #a8a29a;
-    font-size: 0.8rem;
+    margin: 24px 0;
+    color: #b3ab9a;
+    font-size: 0.78rem;
   }
   .divider::before, .divider::after {
     content: "";
     flex: 1;
     height: 1px;
-    background: #e0dcd3;
+    background: #e5ddc9;
   }
   .divider span { padding: 0 12px; }
   .btn-google {
     width: 100%;
     padding: 12px;
     background: #fff;
-    border: 1.5px solid #e0dcd3;
-    border-radius: 10px;
-    font-size: 0.95rem;
+    border: 1.5px solid #e5ddc9;
+    border-radius: 30px;
+    font-size: 0.92rem;
     font-weight: 500;
-    color: #333;
+    color: #4a453c;
     cursor: pointer;
+    transition: border-color 0.2s;
   }
+  .btn-google:hover { border-color: var(--gold); }
   .footer-text {
     text-align: center;
-    margin-top: 24px;
-    font-size: 0.88rem;
-    color: #6b6b6b;
+    margin-top: 26px;
+    font-size: 0.86rem;
+    color: #8a8478;
   }
   .footer-text a {
     color: var(--gold);
@@ -140,9 +161,14 @@
 </style>
 </head>
 <body>
+  <div class="drop" style="width:60px;height:60px;top:10%;left:15%;animation-delay:0s;"></div>
+  <div class="drop" style="width:30px;height:30px;top:70%;left:80%;animation-delay:2s;"></div>
+  <div class="drop" style="width:45px;height:45px;top:80%;left:20%;animation-delay:4s;"></div>
+  <div class="drop" style="width:20px;height:20px;top:20%;left:75%;animation-delay:1s;"></div>
+
   <div class="card">
     <div class="mascote">
-      <svg id="mascote-svg" viewBox="0 0 120 120" width="90" height="90">
+      <svg id="mascote-svg" viewBox="0 0 120 120" width="88" height="88">
         <circle cx="60" cy="60" r="50" fill="#d4a24c"/>
         <circle id="olho-esq" cx="42" cy="55" r="9" fill="#fff"/>
         <circle id="pupila-esq" cx="42" cy="55" r="4" fill="#0e4f57"/>
@@ -178,34 +204,4 @@
 
 <script>
   const pupilaEsq = document.getElementById('pupila-esq');
-  const pupilaDir = document.getElementById('pupila-dir');
-  const maoEsq = document.getElementById('mao-esq');
-  const maoDir = document.getElementById('mao-dir');
-  const svg = document.getElementById('mascote-svg');
-  const senhaInput = document.getElementById('senha');
-
-  document.addEventListener('mousemove', (e) => {
-    const rect = svg.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const angle = Math.atan2(e.clientY - cy, e.clientX - cx);
-    const dist = 3;
-    const dx = Math.cos(angle) * dist;
-    const dy = Math.sin(angle) * dist;
-    pupilaEsq.setAttribute('cx', 42 + dx);
-    pupilaEsq.setAttribute('cy', 55 + dy);
-    pupilaDir.setAttribute('cx', 78 + dx);
-    pupilaDir.setAttribute('cy', 55 + dy);
-  });
-
-  senhaInput.addEventListener('focus', () => {
-    maoEsq.style.opacity = '1';
-    maoDir.style.opacity = '1';
-  });
-  senhaInput.addEventListener('blur', () => {
-    maoEsq.style.opacity = '0';
-    maoDir.style.opacity = '0';
-  });
-</script>
-</body>
-</html>
+  const pupilaDir = document.getElementById('pupila-dir')
