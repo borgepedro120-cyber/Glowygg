@@ -51,6 +51,12 @@
     color: #fff;
     border-radius: 18px;
     padding: 20px 22px;
+    opacity: 0;
+    transform: scale(0.94);
+    animation: pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  @keyframes pop {
+    to { opacity: 1; transform: scale(1); }
   }
   .resumo p {
     margin: 0;
@@ -86,6 +92,17 @@
     padding: 16px 18px;
     margin-bottom: 10px;
     border: 1px solid #ece5d5;
+    opacity: 0;
+    transform: translateX(-12px);
+    animation: entrarPasso 0.5s ease forwards;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .passo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  }
+  @keyframes entrarPasso {
+    to { opacity: 1; transform: translateX(0); }
   }
   .passo .num {
     width: 28px;
@@ -99,6 +116,10 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    transition: transform 0.3s;
+  }
+  .passo:hover .num {
+    transform: rotate(360deg);
   }
   .passo .conteudo strong {
     display: block;
@@ -164,112 +185,3 @@
   </div>
 
   <button class="btn-admin-flutuante" id="btn-admin">⚙️ Admin</button>
-
-<script>
-  const SUPABASE_URL = 'https://uupqiqxsnwwzspqhyalq.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1cHFpcXhzbnd3enNwcWh5YWxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MTg5MzcsImV4cCI6MjEwMzE5NDkzN30.RZX7e6QaR9lCEwaxWXJZzxJyUkbjC6rPubpQyI7ln5o';
-  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-  const EMAIL_ADMIN = 'borgepedro120@gmail.com';
-
-  const NOMES_TIPO = { oleosa: 'Pele oleosa', seca: 'Pele seca', mista: 'Pele mista', normal: 'Pele normal' };
-  const NOMES_FOCO = {
-    acne: 'Foco em controlar acne e cravos',
-    manchas: 'Foco em uniformizar manchas',
-    rugas: 'Foco em linhas e firmeza',
-    poros: 'Foco em refinar poros'
-  };
-
-  async function buscarConteudo() {
-    const { data, error } = await supabaseClient.from('conteudo_rotina').select('chave, nome, descricao');
-    if (error || !data) return {};
-    const mapa = {};
-    data.forEach(item => { mapa[item.chave] = { nome: item.nome, desc: item.descricao }; });
-    return mapa;
-  }
-
-  function montarRotina(conteudo, tipo, foco, nivelAtual) {
-    const manha = [];
-    const noite = [];
-
-    const limpeza = conteudo[`limpeza_${tipo}`] || conteudo['limpeza_normal'];
-    const hidratante = conteudo[`hidratante_${tipo}`] || conteudo['hidratante_normal'];
-
-    if (limpeza) { manha.push(limpeza); noite.push(limpeza); }
-
-    if (nivelAtual !== 'nenhuma') {
-      const tratManha = conteudo[`trat_manha_${foco}`];
-      if (tratManha) manha.push(tratManha);
-    }
-
-    if (hidratante) manha.push(hidratante);
-    if (conteudo['protetor_solar']) manha.push(conteudo['protetor_solar']);
-
-    if (nivelAtual === 'completa') {
-      const tratNoite = conteudo[`trat_noite_${foco}`];
-      if (tratNoite) noite.push(tratNoite);
-    }
-    if (hidratante) noite.push(hidratante);
-
-    return { manha, noite };
-  }
-
-  function renderizarLista(el, passos) {
-    el.innerHTML = passos.map((p, i) => `
-      <div class="passo">
-        <div class="num">${i + 1}</div>
-        <div class="conteudo">
-          <strong>${p.nome}</strong>
-          <span>${p.desc}</span>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  async function iniciar() {
-    const { data: { user } } = await supabaseClient.auth.getUser();
-    if (!user) {
-      window.location.href = 'index.html';
-      return;
-    }
-    const meta = user.user_metadata || {};
-    if (!meta.onboarding_concluido) {
-      window.location.href = 'onboarding.html';
-      return;
-    }
-
-    const tipo = meta.tipo_pele || 'normal';
-    const foco = meta.preocupacao || 'poros';
-    const nivel = meta.rotina_atual || 'basica';
-
-    document.getElementById('resumo-tipo').textContent = NOMES_TIPO[tipo];
-    document.getElementById('resumo-foco').textContent = NOMES_FOCO[foco];
-
-    const conteudo = await buscarConteudo();
-    const { manha, noite } = montarRotina(conteudo, tipo, foco, nivel);
-    renderizarLista(document.getElementById('lista-manha'), manha);
-    renderizarLista(document.getElementById('lista-noite'), noite);
-
-    if (user.email === EMAIL_ADMIN) {
-      const btnAdmin = document.getElementById('btn-admin');
-      btnAdmin.style.display = 'flex';
-      btnAdmin.addEventListener('click', () => { window.location.href = 'admin.html'; });
-    }
-
-    document.getElementById('carregando').style.display = 'none';
-    document.getElementById('conteudo').style.display = 'block';
-  }
-
-  document.getElementById('btn-sair').addEventListener('click', async () => {
-    await supabaseClient.auth.signOut();
-    window.location.href = 'index.html';
-  });
-
-  document.getElementById('btn-refazer').addEventListener('click', () => {
-    window.location.href = 'onboarding.html';
-  });
-
-  iniciar();
-</script>
-</body>
-</html>
