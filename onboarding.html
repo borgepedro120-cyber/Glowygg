@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vamos te conhecer — Glowy</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --teal-deep: #0e4f57;
+    --teal-mid: #17828d;
+    --cream: #fdfaf4;
+    --gold: #d4a24c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    background: radial-gradient(circle at 20% 20%, #1a6b74, var(--teal-deep) 60%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow: hidden;
+    position: relative;
+  }
+  .drop {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), rgba(255,255,255,0.05));
+    filter: blur(1px);
+    animation: float 10s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    50% { transform: translateY(-30px) translateX(10px); }
+  }
+  .card {
+    position: relative;
+    background: rgba(253, 250, 244, 0.95);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    padding: 40px 32px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+    z-index: 1;
+  }
+  .progress {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 28px;
+  }
+  .progress span {
+    flex: 1;
+    height: 4px;
+    border-radius: 4px;
+    background: #e5ddc9;
+    transition: background 0.3s;
+  }
+  .progress span.done { background: var(--gold); }
+  .step { display: none; animation: fadeIn 0.4s ease; }
+  .step.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--teal-deep);
+    margin: 0 0 6px;
+  }
+  .step p.hint {
+    color: #8a8478;
+    font-size: 0.9rem;
+    margin: 0 0 22px;
+  }
+  .opcoes {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .opcao {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1.5px solid #e5ddc9;
+    border-radius: 14px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: #3a352c;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .opcao:hover { border-color: var(--gold); }
+  .opcao.selecionada {
+    border-color: var(--teal-mid);
+    background: rgba(23,130,141,0.08);
+  }
+  .opcao .emoji { font-size: 1.3rem; }
+  .btn-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .btn-primary {
+    flex: 1;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--teal-mid), var(--teal-deep));
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 8px 20px rgba(14,79,87,0.35);
+  }
+  .btn-primary:hover { transform: translateY(-2px); }
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .btn-voltar {
+    background: none;
+    border: none;
+    color: #8a8478;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 10px;
+  }
+  .msg {
+    text-align: center;
+    font-size: 0.85rem;
+    margin-top: 14px;
+    min-height: 18px;
+    color: #c0392b;
+  }
+</style>
+</head>
+<body>
+  <div class="drop" style="width:60px;height:60px;top:10%;left:15%;animation-delay:0s;"></div>
+  <div class="drop" style="width:30px;height:30px;top:70%;left:80%;animation-delay:2s;"></div>
+  <div class="drop" style="width:45px;height:45px;top:80%;left:20%;animation-delay:4s;"></div>
+
+  <div class="card">
+    <div class="progress">
+      <span id="bar-1" class="done"></span>
+      <span id="bar-2"></span>
+      <span id="bar-3"></span>
+    </div>
+
+    <div class="step active" data-step="1">
+      <h1>Como é a sua pele?</h1>
+      <p class="hint">Isso nos ajuda a montar sua rotina ideal.</p>
+      <div class="opcoes" data-grupo="tipoPele">
+        <div class="opcao" data-valor="oleosa"><span class="emoji">💧</span> Oleosa</div>
+        <div class="opcao" data-valor="seca"><span class="emoji">🌵</span> Seca</div>
+        <div class="opcao" data-valor="mista"><span class="emoji">🌗</span> Mista</div>
+        <div class="opcao" data-valor="normal"><span class="emoji">🌿</span> Normal</div>
+      </div>
+      <div class="btn-nav">
+        <button class="btn-primary" id="btn-1" disabled>Continuar</button>
+      </div>
+    </div>
+
+    <div class="step" data-step="2">
+      <h1>O que mais te incomoda?</h1>
+      <p class="hint">Escolha a sua principal preocupação hoje.</p>
+      <div class="opcoes" data-grupo="preocupacao">
+        <div class="opcao" data-valor="acne"><span class="emoji">🔴</span> Acne e cravos</div>
+        <div class="opcao" data-valor="manchas"><span class="emoji">☀️</span> Manchas e melasma</div>
+        <div class="opcao" data-valor="rugas"><span class="emoji">✨</span> Linhas e rugas</div>
+        <div class="opcao" data-valor="poros"><span class="emoji">🔍</span> Poros dilatados</div>
+      </div>
+      <div class="btn-nav">
+        <button class="btn-voltar" data-voltar>Voltar</button>
+        <button class="btn-primary" id="btn-2" disabled>Continuar</button>
+      </div>
+    </div>
+
+    <div class="step" data-step="3">
+      <h1>Como é sua rotina hoje?</h1>
+      <p class="hint">Sem julgamentos — vamos começar de onde você está.</p>
+      <div class="opcoes" data-grupo="rotina">
+        <div class="opcao" data-valor="nenhuma"><span class="emoji">🌱</span> Não tenho rotina</div>
+        <div class="opcao" data-valor="basica"><span class="emoji">🧴</span> Só limpeza e hidratante</div>
+        <div class="opcao" data-valor="completa"><span class="emoji">💫</span> Rotina completa</div>
+      </div>
+      <div class="btn-nav">
+        <button class="btn-voltar" data-voltar>Voltar</button>
+        <button class="btn-primary" id="btn-3" disabled>Concluir</button>
+      </div>
+    </div>
+
+    <p class="msg" id="msg"></p>
+  </div>
+
+<script>
+  const SUPABASE_URL = 'https://uupqiqxsnwwzspqhyalq.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1cHFpcXhzbnd3enNwcWh5YWxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MTg5MzcsImV4cCI6MjEwMzE5NDkzN30.RZX7e6QaR9lCEwaxWXJZzxJyUkbjC6rPubpQyI7ln5o';
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const respostas = { tipoPele: null, preocupacao: null, rotina: null };
+  let etapaAtual = 1;
+  const totalEtapas = 3;
+  const msg = document.getElementById('msg');
+
+  document.querySelectorAll('.opcoes').forEach(grupo => {
+    const nomeGrupo = grupo.dataset.grupo;
+    grupo.querySelectorAll('.opcao').forEach(opcao => {
+      opcao.addEventListener('click', () => {
+        grupo.querySelectorAll('.opcao').forEach(o => o.classList.remove('selecionada'));
+        opcao.classList.add('selecionada');
+        respostas[nomeGrupo] = opcao.dataset.valor;
+        const btn = grupo.closest('.step').querySelector('.btn-primary');
+        btn.disabled = false;
+      });
+    });
+  });
+
+  function irParaEtapa(n) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.querySelector(`.step[data-step="${n}"]`).classList.add('active');
+    for (let i = 1; i <= totalEtapas; i++) {
+      document.getElementById(`bar-${i}`).classList.toggle('done', i <= n);
+    }
+    etapaAtual = n;
+    msg.textContent = '';
+  }
+
+  document.querySelectorAll('[data-voltar]').forEach(btn => {
+    btn.addEventListener('click', () => irParaEtapa(etapaAtual - 1));
+  });
+
+  document.getElementById('btn-1').addEventListener('click', () => irParaEtapa(2));
+  document.getElementById('btn-2').addEventListener('click', () => irParaEtapa(3));
+
+  document.getElementById('btn-3').addEventListener('click', async () => {
+    const btn = document.getElementById('btn-3');
+    btn.disabled = true;
+    btn.textContent = 'Salvando...';
+
+    try {
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (!user) {
+        msg.textContent = 'Sessão expirada. Faça login novamente.';
+        setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+        return;
+      }
+      const { error } = await supabaseClient.auth.updateUser({
+        data: {
+          tipo_pele: respostas.tipoPele,
+          preocupacao: respostas.preocupacao,
+          rotina_atual: respostas.rotina,
+          onboarding_concluido: true
+        }
+      });
+      if (error) throw error;
+      window.location.href = 'dashboard.html';
+    } catch (err) {
+      msg.textContent = err.message || 'Algo deu errado. Tente de novo.';
+      btn.disabled = false;
+      btn.textContent = 'Concluir';
+    }
+  });
+</script>
+</body>
+                                   </html>
