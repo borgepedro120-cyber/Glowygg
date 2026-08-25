@@ -4,13 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sua rotina — Glowy</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
     --teal-deep: #0e4f57;
     --teal-mid: #17828d;
-    --cream: #fdfaf4;
     --gold: #d4a24c;
   }
   * { box-sizing: border-box; }
@@ -18,22 +17,116 @@
     margin: 0;
     min-height: 100vh;
     font-family: 'Inter', sans-serif;
-    background: #f6f1e7;
-    color: #3a352c;
-    padding: 28px 20px 60px;
+    background: #f4f2ec;
+    color: #241f1a;
+    padding-bottom: 80px;
   }
-  .topo {
-    max-width: 480px;
-    margin: 0 auto 24px;
-    display: flex;
-    justify-content: space-between;
+  .banner {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+  }
+  .miolo {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 24px 20px 0;
+  }
+  .voltar {
+    display: inline-flex;
     align-items: center;
+    gap: 6px;
+    color: var(--teal-mid);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 16px;
   }
-  .topo h1 {
+  h1.titulo {
     font-family: 'Fraunces', serif;
-    font-size: 1.6rem;
-    color: var(--teal-deep);
-    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 14px;
+    line-height: 1.15;
+  }
+  .tags {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 20px;
+  }
+  .tag-nivel { background: #dcefe6; color: #1e6b4d; }
+  .tag-tempo { background: #ece7dc; color: #6b6656; }
+  .descricao {
+    color: #55503f;
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+  .secao-titulo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--teal-mid);
+    margin: 28px 0 14px;
+  }
+  .card-passo {
+    background: #fff;
+    border-radius: 18px;
+    padding: 20px 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 8px 20px rgba(0,0,0,0.04);
+    opacity: 0;
+    transform: translateY(14px);
+    animation: subir 0.5s ease forwards;
+  }
+  @keyframes subir {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card-passo .num {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #dcefe6;
+    color: #1e6b4d;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+  .card-passo strong {
+    display: block;
+    font-size: 1.05rem;
+    margin-bottom: 6px;
+  }
+  .card-passo span {
+    color: #6b6656;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .topo-acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    max-width: 560px;
+    margin: 16px auto 0;
+    padding: 0 20px;
   }
   .btn-sair {
     background: none;
@@ -43,92 +136,6 @@
     font-size: 0.82rem;
     color: #8a8478;
     cursor: pointer;
-  }
-  .resumo {
-    max-width: 480px;
-    margin: 0 auto 28px;
-    background: var(--teal-deep);
-    color: #fff;
-    border-radius: 18px;
-    padding: 20px 22px;
-    opacity: 0;
-    transform: scale(0.94);
-    animation: pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  }
-  @keyframes pop {
-    to { opacity: 1; transform: scale(1); }
-  }
-  .resumo p {
-    margin: 0;
-    font-size: 0.88rem;
-    opacity: 0.85;
-  }
-  .resumo strong {
-    font-family: 'Fraunces', serif;
-    font-size: 1.2rem;
-    display: block;
-    margin-bottom: 4px;
-  }
-  .secao {
-    max-width: 480px;
-    margin: 0 auto 24px;
-  }
-  .secao-titulo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--teal-mid);
-    margin-bottom: 12px;
-  }
-  .passo {
-    display: flex;
-    gap: 14px;
-    background: #fff;
-    border-radius: 16px;
-    padding: 16px 18px;
-    margin-bottom: 10px;
-    border: 1px solid #ece5d5;
-    opacity: 0;
-    transform: translateX(-12px);
-    animation: entrarPasso 0.5s ease forwards;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .passo:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-  }
-  @keyframes entrarPasso {
-    to { opacity: 1; transform: translateX(0); }
-  }
-  .passo .num {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: var(--gold);
-    color: #fff;
-    font-size: 0.85rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: transform 0.3s;
-  }
-  .passo:hover .num {
-    transform: rotate(360deg);
-  }
-  .passo .conteudo strong {
-    display: block;
-    font-size: 0.95rem;
-    margin-bottom: 2px;
-  }
-  .passo .conteudo span {
-    font-size: 0.85rem;
-    color: #8a8478;
   }
   .carregando {
     max-width: 480px;
@@ -160,45 +167,43 @@
   <div id="carregando" class="carregando">Montando sua rotina...</div>
 
   <div id="conteudo" style="display:none;">
-    <div class="topo">
-      <h1>Sua rotina</h1>
-      <div style="display:flex; gap:8px;">
-        <button class="btn-sair" id="btn-refazer">Refazer quiz</button>
-        <button class="btn-sair" id="btn-sair">Sair</button>
+    <img class="banner" src="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1200&q=80" alt="">
+
+    <div class="topo-acoes">
+      <button class="btn-sair" id="btn-refazer">Refazer quiz</button>
+      <button class="btn-sair" id="btn-sair">Sair</button>
+    </div>
+
+    <div class="miolo">
+      <a class="voltar" href="sobre.html">← Sobre a Glowy</a>
+      <h1 class="titulo" id="titulo-rotina">Sua rotina personalizada</h1>
+      <div class="tags">
+        <span class="tag tag-nivel" id="tag-nivel">Nível</span>
+        <span class="tag tag-tempo" id="tag-tempo">Tempo</span>
       </div>
-    </div>
+      <p class="descricao" id="descricao-rotina"></p>
 
-    <div class="resumo">
-      <strong id="resumo-tipo"></strong>
-      <p id="resumo-foco"></p>
-    </div>
-
-    <div class="secao">
       <div class="secao-titulo">☀️ Manhã</div>
       <div id="lista-manha"></div>
-    </div>
 
-    <div class="secao">
       <div class="secao-titulo">🌙 Noite</div>
       <div id="lista-noite"></div>
     </div>
   </div>
 
   <button class="btn-admin-flutuante" id="btn-admin">⚙️ Admin</button>
-  <script>
+
+<script>
   const SUPABASE_URL = 'https://uupqiqxsnwwzspqhyalq.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1cHFpcXhzbnd3enNwcWh5YWxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MTg5MzcsImV4cCI6MjEwMzE5NDkzN30.RZX7e6QaR9lCEwaxWXJZzxJyUkbjC6rPubpQyI7ln5o';
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const EMAIL_ADMIN = 'borgepedro120@gmail.com';
 
-  const NOMES_TIPO = { oleosa: 'Pele oleosa', seca: 'Pele seca', mista: 'Pele mista', normal: 'Pele normal' };
-  const NOMES_FOCO = {
-    acne: 'Foco em controlar acne e cravos',
-    manchas: 'Foco em uniformizar manchas',
-    rugas: 'Foco em linhas e firmeza',
-    poros: 'Foco em refinar poros'
-  };
+  const NOMES_TIPO = { oleosa: 'pele oleosa', seca: 'pele seca', mista: 'pele mista', normal: 'pele normal' };
+  const NOMES_FOCO = { acne: 'acne e cravos', manchas: 'manchas', rugas: 'linhas e rugas', poros: 'poros dilatados' };
+  const NOMES_TEMPO = { rapida: '3 min', media: '7 min', completa: '15 min' };
+  const NOMES_NIVEL = { nenhuma: 'iniciante', basica: 'intermediário', completa: 'avançado' };
 
   async function buscarConteudo() {
     const { data, error } = await supabaseClient.from('conteudo_rotina').select('chave, nome, descricao');
@@ -234,14 +239,12 @@
     return { manha, noite };
   }
 
-  function renderizarLista(el, passos) {
+  function renderizarLista(el, passos, offset) {
     el.innerHTML = passos.map((p, i) => `
-      <div class="passo" style="animation-delay: ${i * 0.1}s">
-        <div class="num">${i + 1}</div>
-        <div class="conteudo">
-          <strong>${p.nome}</strong>
-          <span>${p.desc}</span>
-        </div>
+      <div class="card-passo" style="animation-delay: ${(offset + i) * 0.08}s">
+        <div class="num">${offset + i + 1}</div>
+        <strong>${p.nome}</strong>
+        <span>${p.desc}</span>
       </div>
     `).join('');
   }
@@ -261,14 +264,18 @@
     const tipo = meta.tipo_pele || 'normal';
     const foco = meta.preocupacao || 'poros';
     const nivel = meta.rotina_atual || 'basica';
+    const tempo = meta.tempo_disponivel || 'media';
 
-    document.getElementById('resumo-tipo').textContent = NOMES_TIPO[tipo];
-    document.getElementById('resumo-foco').textContent = NOMES_FOCO[foco];
+    document.getElementById('titulo-rotina').textContent = `Rotina para ${NOMES_TIPO[tipo]}`;
+    document.getElementById('descricao-rotina').textContent =
+      `Uma rotina pensada para quem tem ${NOMES_TIPO[tipo]} e quer cuidar de ${NOMES_FOCO[foco]}, combinando os passos certos de manhã e à noite.`;
+    document.getElementById('tag-nivel').textContent = NOMES_NIVEL[nivel] || 'personalizado';
+    document.getElementById('tag-tempo').textContent = NOMES_TEMPO[tempo] || '';
 
     const conteudo = await buscarConteudo();
     const { manha, noite } = montarRotina(conteudo, tipo, foco, nivel);
-    renderizarLista(document.getElementById('lista-manha'), manha);
-    renderizarLista(document.getElementById('lista-noite'), noite);
+    renderizarLista(document.getElementById('lista-manha'), manha, 0);
+    renderizarLista(document.getElementById('lista-noite'), noite, manha.length);
 
     if (user.email === EMAIL_ADMIN) {
       const btnAdmin = document.getElementById('btn-admin');
