@@ -42,6 +42,11 @@
   @keyframes rise {
     to { opacity: 1; transform: translateY(0); }
   }
+  .mascote {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
   .logo {
     text-align: center;
     margin-bottom: 8px;
@@ -90,14 +95,18 @@
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.2s;
   }
   .btn-primary:hover {
     background: var(--teal-mid);
     transform: scale(1.02);
   }
-  .btn-primary {
-    transition: background 0.2s, transform 0.2s;
+  .divider {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    color: #a8a29a;
+    font-size: 0.8rem;
   }
   .divider::before, .divider::after {
     content: "";
@@ -132,6 +141,22 @@
 </head>
 <body>
   <div class="card">
+    <div class="mascote">
+      <svg id="mascote-svg" viewBox="0 0 120 120" width="90" height="90">
+        <circle cx="60" cy="60" r="50" fill="#d4a24c"/>
+        <circle id="olho-esq" cx="42" cy="55" r="9" fill="#fff"/>
+        <circle id="pupila-esq" cx="42" cy="55" r="4" fill="#0e4f57"/>
+        <circle id="olho-dir" cx="78" cy="55" r="9" fill="#fff"/>
+        <circle id="pupila-dir" cx="78" cy="55" r="4" fill="#0e4f57"/>
+        <path d="M45 80 Q60 90 75 80" stroke="#0e4f57" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <g id="mao-esq" style="opacity:0; transition: opacity 0.25s;">
+          <ellipse cx="42" cy="55" rx="13" ry="13" fill="#d4a24c" stroke="#b9863a" stroke-width="2"/>
+        </g>
+        <g id="mao-dir" style="opacity:0; transition: opacity 0.25s;">
+          <ellipse cx="78" cy="55" rx="13" ry="13" fill="#d4a24c" stroke="#b9863a" stroke-width="2"/>
+        </g>
+      </svg>
+    </div>
     <div class="logo"><span>Glowy</span></div>
     <p class="subtitle">Bem-vindo à sua melhor pele</p>
 
@@ -150,5 +175,37 @@
 
     <p class="footer-text">Não tem conta? <a href="#">Criar conta</a></p>
   </div>
+
+<script>
+  const pupilaEsq = document.getElementById('pupila-esq');
+  const pupilaDir = document.getElementById('pupila-dir');
+  const maoEsq = document.getElementById('mao-esq');
+  const maoDir = document.getElementById('mao-dir');
+  const svg = document.getElementById('mascote-svg');
+  const senhaInput = document.getElementById('senha');
+
+  document.addEventListener('mousemove', (e) => {
+    const rect = svg.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const angle = Math.atan2(e.clientY - cy, e.clientX - cx);
+    const dist = 3;
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist;
+    pupilaEsq.setAttribute('cx', 42 + dx);
+    pupilaEsq.setAttribute('cy', 55 + dy);
+    pupilaDir.setAttribute('cx', 78 + dx);
+    pupilaDir.setAttribute('cy', 55 + dy);
+  });
+
+  senhaInput.addEventListener('focus', () => {
+    maoEsq.style.opacity = '1';
+    maoDir.style.opacity = '1';
+  });
+  senhaInput.addEventListener('blur', () => {
+    maoEsq.style.opacity = '0';
+    maoDir.style.opacity = '0';
+  });
+</script>
 </body>
-                                            </html>
+</html>
