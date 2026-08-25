@@ -155,6 +155,8 @@
       <span id="bar-1" class="done"></span>
       <span id="bar-2"></span>
       <span id="bar-3"></span>
+      <span id="bar-4"></span>
+      <span id="bar-5"></span>
     </div>
 
     <div class="step active" data-step="1">
@@ -196,7 +198,35 @@
       </div>
       <div class="btn-nav">
         <button class="btn-voltar" data-voltar>Voltar</button>
-        <button class="btn-primary" id="btn-3" disabled>Concluir</button>
+        <button class="btn-primary" id="btn-3" disabled>Continuar</button>
+      </div>
+    </div>
+
+    <div class="step" data-step="4">
+      <h1>Sua pele é sensível?</h1>
+      <p class="hint">Isso ajusta a intensidade dos produtos sugeridos.</p>
+      <div class="opcoes" data-grupo="sensibilidade">
+        <div class="opcao" data-valor="muito"><span class="emoji">🌸</span> Muito sensível, irrita fácil</div>
+        <div class="opcao" data-valor="um_pouco"><span class="emoji">🙂</span> Um pouco sensível</div>
+        <div class="opcao" data-valor="nao"><span class="emoji">💪</span> Não é sensível</div>
+      </div>
+      <div class="btn-nav">
+        <button class="btn-voltar" data-voltar>Voltar</button>
+        <button class="btn-primary" id="btn-4" disabled>Continuar</button>
+      </div>
+    </div>
+
+    <div class="step" data-step="5">
+      <h1>Quanto tempo você tem?</h1>
+      <p class="hint">Vamos ajustar o tamanho da rotina ao seu dia a dia.</p>
+      <div class="opcoes" data-grupo="tempo">
+        <div class="opcao" data-valor="rapida"><span class="emoji">⚡</span> Só o essencial, rapidinho</div>
+        <div class="opcao" data-valor="media"><span class="emoji">⏱️</span> Alguns minutinhos a mais</div>
+        <div class="opcao" data-valor="completa"><span class="emoji">🕰️</span> Tenho tempo de sobra</div>
+      </div>
+      <div class="btn-nav">
+        <button class="btn-voltar" data-voltar>Voltar</button>
+        <button class="btn-primary" id="btn-5" disabled>Concluir</button>
       </div>
     </div>
 
@@ -208,9 +238,9 @@
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1cHFpcXhzbnd3enNwcWh5YWxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MTg5MzcsImV4cCI6MjEwMzE5NDkzN30.RZX7e6QaR9lCEwaxWXJZzxJyUkbjC6rPubpQyI7ln5o';
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  const respostas = { tipoPele: null, preocupacao: null, rotina: null };
+  const respostas = { tipoPele: null, preocupacao: null, rotina: null, sensibilidade: null, tempo: null };
   let etapaAtual = 1;
-  const totalEtapas = 3;
+  const totalEtapas = 5;
   const msg = document.getElementById('msg');
 
   document.querySelectorAll('.opcoes').forEach(grupo => {
@@ -242,9 +272,11 @@
 
   document.getElementById('btn-1').addEventListener('click', () => irParaEtapa(2));
   document.getElementById('btn-2').addEventListener('click', () => irParaEtapa(3));
+  document.getElementById('btn-3').addEventListener('click', () => irParaEtapa(4));
+  document.getElementById('btn-4').addEventListener('click', () => irParaEtapa(5));
 
-  document.getElementById('btn-3').addEventListener('click', async () => {
-    const btn = document.getElementById('btn-3');
+  document.getElementById('btn-5').addEventListener('click', async () => {
+    const btn = document.getElementById('btn-5');
     btn.disabled = true;
     btn.textContent = 'Salvando...';
 
@@ -260,6 +292,8 @@
           tipo_pele: respostas.tipoPele,
           preocupacao: respostas.preocupacao,
           rotina_atual: respostas.rotina,
+          pele_sensivel: respostas.sensibilidade,
+          tempo_disponivel: respostas.tempo,
           onboarding_concluido: true
         }
       });
@@ -273,4 +307,4 @@
   });
 </script>
 </body>
-                                   </html>
+</html>
