@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sobre a Glowy</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal-deep: #0e4f57;
+    --teal-mid: #17828d;
+    --cream: #fdfaf4;
+    --gold: #d4a24c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: #3a352c;
+  }
+  .hero {
+    background: radial-gradient(circle at 20% 20%, #1a6b74, var(--teal-deep) 60%);
+    color: #fff;
+    padding: 60px 24px 70px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .drop {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), rgba(255,255,255,0.05));
+    animation: float 9s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-24px); }
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 2.4rem;
+    margin: 0 0 12px;
+    opacity: 0;
+    animation: subir 0.8s ease forwards 0.1s;
+  }
+  .hero p {
+    font-size: 1rem;
+    opacity: 0;
+    max-width: 420px;
+    margin: 0 auto;
+    animation: subir 0.8s ease forwards 0.3s;
+  }
+  @keyframes subir {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .secao {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 50px 24px;
+  }
+  .secao h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    color: var(--teal-deep);
+    margin-bottom: 16px;
+  }
+  .secao p {
+    line-height: 1.6;
+    color: #55503f;
+  }
+  .grade {
+    display: grid;
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .cartao {
+    background: #fff;
+    border: 1px solid #ece5d5;
+    border-radius: 16px;
+    padding: 20px;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .cartao.visivel { opacity: 1; transform: translateY(0); }
+  .cartao .emoji { font-size: 1.8rem; margin-bottom: 8px; display: block; }
+  .cartao strong { display: block; font-size: 1rem; margin-bottom: 4px; color: var(--teal-deep); }
+  .cartao span { font-size: 0.88rem; color: #6b6656; }
+  .cta {
+    text-align: center;
+    padding: 40px 24px 60px;
+  }
+  .btn-cta {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--teal-mid), var(--teal-deep));
+    color: #fff;
+    text-decoration: none;
+    padding: 14px 32px;
+    border-radius: 30px;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(14,79,87,0.3);
+    transition: transform 0.2s;
+  }
+  .btn-cta:hover { transform: translateY(-3px); }
+</style>
+</head>
+<body>
+  <div class="hero">
+    <div class="drop" style="width:50px;height:50px;top:15%;left:10%;animation-delay:0s;"></div>
+    <div class="drop" style="width:30px;height:30px;top:70%;left:85%;animation-delay:2s;"></div>
+    <div class="drop" style="width:36px;height:36px;top:20%;left:80%;animation-delay:4s;"></div>
+    <h1>A Glowy nasceu de uma ideia simples</h1>
+    <p>Toda pele merece uma rotina feita sob medida — sem fórmulas prontas, sem complicação.</p>
+  </div>
+
+  <div class="secao">
+    <h2>Nossa história</h2>
+    <p>A Glowy começou como um projeto pessoal: a vontade de criar uma ferramenta que entendesse a pele de cada pessoa e sugerisse, de verdade, o que fazia sentido para ela — sem depender de fórmulas genéricas ou de plataformas fechadas que limitam o que se pode construir.</p>
+  </div>
+
+  <div class="secao">
+    <h2>O que fizemos</h2>
+    <div class="grade">
+      <div class="cartao">
+        <span class="emoji">🧬</span>
+        <strong>Rotina personalizada</strong>
+        <span>Perguntas rápidas sobre tipo de pele, preocupações e hábitos atuais montam uma rotina única.</span>
+      </div>
+      <div class="cartao">
+        <span class="emoji">🔐</span>
+        <strong>Login seguro</strong>
+        <span>Cadastro por e-mail ou Google, protegendo os dados de cada pessoa.</span>
+      </div>
+      <div class="cartao">
+        <span class="emoji">🛠️</span>
+        <strong>Construído do zero</strong>
+        <span>Código próprio, hospedado gratuitamente, sem depender de plataformas de terceiros.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta">
+    <a href="index.html" class="btn-cta">Experimentar a Glowy</a>
+  </div>
+
+<script>
+  const cartoes = document.querySelectorAll('.cartao');
+  const observador = new IntersectionObserver((entradas) => {
+    entradas.forEach((entrada, i) => {
+      if (entrada.isIntersecting) {
+        setTimeout(() => entrada.target.classList.add('visivel'), i * 120);
+        observador.unobserve(entrada.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  cartoes.forEach(c => observador.observe(c));
+</script>
+</body>
+</html>
