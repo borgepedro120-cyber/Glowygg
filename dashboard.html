@@ -123,7 +123,10 @@
   <div id="conteudo" style="display:none;">
     <div class="topo">
       <h1>Sua rotina</h1>
-      <button class="btn-sair" id="btn-sair">Sair</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-sair" id="btn-refazer">Refazer quiz</button>
+        <button class="btn-sair" id="btn-sair">Sair</button>
+      </div>
     </div>
 
     <div class="resumo">
@@ -255,6 +258,10 @@
   document.getElementById('btn-sair').addEventListener('click', async () => {
     await supabaseClient.auth.signOut();
     window.location.href = 'index.html';
+  });
+
+  document.getElementById('btn-refazer').addEventListener('click', () => {
+    window.location.href = 'onboarding.html';
   });
 
   iniciar();
