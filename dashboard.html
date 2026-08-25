@@ -115,6 +115,24 @@
     text-align: center;
     color: #8a8478;
   }
+  .btn-admin-flutuante {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--teal-deep);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 22px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    display: none;
+    align-items: center;
+    gap: 8px;
+    z-index: 10;
+  }
 </style>
 </head>
 <body>
@@ -145,10 +163,14 @@
     </div>
   </div>
 
+  <button class="btn-admin-flutuante" id="btn-admin">⚙️ Admin</button>
+
 <script>
   const SUPABASE_URL = 'https://uupqiqxsnwwzspqhyalq.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1cHFpcXhzbnd3enNwcWh5YWxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MTg5MzcsImV4cCI6MjEwMzE5NDkzN30.RZX7e6QaR9lCEwaxWXJZzxJyUkbjC6rPubpQyI7ln5o';
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const EMAIL_ADMIN = 'borgepedro120@gmail.com';
 
   const NOMES_TIPO = { oleosa: 'Pele oleosa', seca: 'Pele seca', mista: 'Pele mista', normal: 'Pele normal' };
   const NOMES_FOCO = {
@@ -158,60 +180,36 @@
     poros: 'Foco em refinar poros'
   };
 
-  function limpezaPorTipo(tipo) {
-    if (tipo === 'oleosa') return { nome: 'Gel de limpeza facial', desc: 'Espumante, remove oleosidade sem ressecar' };
-    if (tipo === 'seca') return { nome: 'Leite ou creme de limpeza', desc: 'Sem espuma, preserva a barreira da pele' };
-    return { nome: 'Sabonete facial suave', desc: 'Equilibrado, para uso diário' };
+  async function buscarConteudo() {
+    const { data, error } = await supabaseClient.from('conteudo_rotina').select('chave, nome, descricao');
+    if (error || !data) return {};
+    const mapa = {};
+    data.forEach(item => { mapa[item.chave] = { nome: item.nome, desc: item.descricao }; });
+    return mapa;
   }
 
-  function hidratantePorTipo(tipo) {
-    if (tipo === 'oleosa') return { nome: 'Hidratante em gel oil-free', desc: 'Leve, não obstrui os poros' };
-    if (tipo === 'seca') return { nome: 'Hidratante em creme nutritivo', desc: 'Rico em emolientes' };
-    return { nome: 'Hidratante em loção', desc: 'Textura leve para uso diário' };
-  }
-
-  function tratamentoPorFoco(foco, periodo) {
-    const mapa = {
-      acne: {
-        manha: { nome: 'Sérum com niacinamida', desc: 'Controla oleosidade e reduz vermelhidão' },
-        noite: { nome: 'Ácido salicílico (2-3x/semana)', desc: 'Desobstrui poros e previne cravos' }
-      },
-      manchas: {
-        manha: { nome: 'Sérum com vitamina C', desc: 'Uniformiza o tom e protege dos radicais livres' },
-        noite: { nome: 'Ácido tranexâmico ou alfa arbutin', desc: 'Atua nas manchas ao longo da noite' }
-      },
-      rugas: {
-        manha: { nome: 'Sérum antioxidante', desc: 'Protege contra o envelhecimento precoce' },
-        noite: { nome: 'Retinol (2-3x/semana)', desc: 'Estimula renovação celular e colágeno' }
-      },
-      poros: {
-        manha: { nome: 'Sérum com niacinamida', desc: 'Ajuda a refinar a aparência dos poros' },
-        noite: { nome: 'Ácido salicílico ou glicólico', desc: 'Esfolia suavemente e desobstrui poros' }
-      }
-    };
-    return mapa[foco]?.[periodo] || null;
-  }
-
-  function montarRotina(tipo, foco, nivelAtual) {
+  function montarRotina(conteudo, tipo, foco, nivelAtual) {
     const manha = [];
     const noite = [];
 
-    manha.push(limpezaPorTipo(tipo));
-    noite.push(limpezaPorTipo(tipo));
+    const limpeza = conteudo[`limpeza_${tipo}`] || conteudo['limpeza_normal'];
+    const hidratante = conteudo[`hidratante_${tipo}`] || conteudo['hidratante_normal'];
+
+    if (limpeza) { manha.push(limpeza); noite.push(limpeza); }
 
     if (nivelAtual !== 'nenhuma') {
-      const tratManha = tratamentoPorFoco(foco, 'manha');
+      const tratManha = conteudo[`trat_manha_${foco}`];
       if (tratManha) manha.push(tratManha);
     }
 
-    manha.push(hidratantePorTipo(tipo));
-    manha.push({ nome: 'Protetor solar FPS 50+', desc: 'Último passo, sempre pela manhã' });
+    if (hidratante) manha.push(hidratante);
+    if (conteudo['protetor_solar']) manha.push(conteudo['protetor_solar']);
 
     if (nivelAtual === 'completa') {
-      const tratNoite = tratamentoPorFoco(foco, 'noite');
+      const tratNoite = conteudo[`trat_noite_${foco}`];
       if (tratNoite) noite.push(tratNoite);
     }
-    noite.push(hidratantePorTipo(tipo));
+    if (hidratante) noite.push(hidratante);
 
     return { manha, noite };
   }
@@ -247,9 +245,16 @@
     document.getElementById('resumo-tipo').textContent = NOMES_TIPO[tipo];
     document.getElementById('resumo-foco').textContent = NOMES_FOCO[foco];
 
-    const { manha, noite } = montarRotina(tipo, foco, nivel);
+    const conteudo = await buscarConteudo();
+    const { manha, noite } = montarRotina(conteudo, tipo, foco, nivel);
     renderizarLista(document.getElementById('lista-manha'), manha);
     renderizarLista(document.getElementById('lista-noite'), noite);
+
+    if (user.email === EMAIL_ADMIN) {
+      const btnAdmin = document.getElementById('btn-admin');
+      btnAdmin.style.display = 'flex';
+      btnAdmin.addEventListener('click', () => { window.location.href = 'admin.html'; });
+    }
 
     document.getElementById('carregando').style.display = 'none';
     document.getElementById('conteudo').style.display = 'block';
