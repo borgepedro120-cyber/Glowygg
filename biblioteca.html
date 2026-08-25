@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biblioteca — Glowy</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --teal-deep:#0e4f57; --teal-mid:#17828d; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: #f4f2ec;
+    color: #241f1a;
+    padding-bottom: 60px;
+  }
+  .topo {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 28px 20px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .topo h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.7rem;
+    margin: 0;
+    color: var(--teal-deep);
+  }
+  .btn-voltar {
+    background: none;
+    border: 1.5px solid #d8d0c0;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 0.82rem;
+    color: #8a8478;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .lista {
+    max-width: 560px;
+    margin: 16px auto 0;
+    padding: 0 20px;
+  }
+  .cartao-dica {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: #fff;
+    border-radius: 18px;
+    overflow: hidden;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 8px 20px rgba(0,0,0,0.05);
+    opacity: 0;
+    transform: translateY(16px);
+    animation: subir 0.5s ease forwards;
+  }
+  @keyframes subir { to { opacity: 1; transform: translateY(0); } }
+  .cartao-dica img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    display: block;
+  }
+  .cartao-dica .info { padding: 16px 18px; }
+  .cartao-dica .tags { display: flex; gap: 6px; margin-bottom: 8px; }
+  .cartao-dica .tag {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: #dcefe6;
+    color: #1e6b4d;
+  }
+  .cartao-dica .tag.tempo { background: #ece7dc; color: #6b6656; }
+  .cartao-dica strong {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem;
+    margin-bottom: 4px;
+  }
+  .cartao-dica span.desc {
+    font-size: 0.85rem;
+    color: #6b6656;
+    line-height: 1.4;
+  }
+</style>
+</head>
+<body>
+  <div class="topo">
+    <h1>Biblioteca de dicas</h1>
+    <a class="btn-voltar" href="dashboard.html">Voltar</a>
+  </div>
+
+  <div class="lista" id="lista"></div>
+
+<script>
+  const dicas = [
+    {
+      id: 'manchas',
+      img: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80',
+      nivel: 'Avançado', tempo: '15 min',
+      titulo: 'Reset de Manchas e Marcas',
+      desc: 'Ataque duplo: bloqueia melanina e acelera a renovação celular.'
+    },
+    {
+      id: 'oleosidade',
+      img: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=800&q=80',
+      nivel: 'Iniciante', tempo: '5 min',
+      titulo: 'Controle de Oleosidade',
+      desc: 'Passos simples para equilibrar a produção de oleosidade sem ressecar.'
+    },
+    {
+      id: 'cansada',
+      img: 'https://images.unsplash.com/photo-1519824145371-296894a0daa9?auto=format&fit=crop&w=800&q=80',
+      nivel: 'Intermediário', tempo: '10 min',
+      titulo: 'SOS Pele Cansada',
+      desc: 'Recupere o viço em poucos dias com essa combinação de ativos.'
+    },
+    {
+      id: 'glowup',
+      img: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=800&q=80',
+      nivel: 'Todos os níveis', tempo: '7 min',
+      titulo: 'Glow Up Rápido',
+      desc: 'Rotina expressa para um brilho saudável antes de um evento.'
+    }
+  ];
+
+  const lista = document.getElementById('lista');
+  lista.innerHTML = dicas.map((d, i) => `
+    <a class="cartao-dica" href="dica.html?id=${d.id}" style="animation-delay:${i * 0.08}s">
+      <img src="${d.img}" alt="">
+      <div class="info">
+        <div class="tags">
+          <span class="tag">${d.nivel}</span>
+          <span class="tag tempo">${d.tempo}</span>
+        </div>
+        <strong>${d.titulo}</strong>
+        <span class="desc">${d.desc}</span>
+      </div>
+    </a>
+  `).join('');
+</script>
+</body>
+</html>
