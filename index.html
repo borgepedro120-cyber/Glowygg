@@ -19,9 +19,7 @@
     margin: 0;
     min-height: 100vh;
     font-family: 'Inter', sans-serif;
-    background: radial-gradient(circle at 20% 20%, #1a6b74, var(--teal-deep) 60%);
-    background-size: 200% 200%;
-    animation: breathe 8s ease-in-out infinite;
+    background: #030712;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -30,20 +28,11 @@
     overflow: hidden;
     position: relative;
   }
-  @keyframes breathe {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
-  .drop {
-    position: absolute;
-    border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), rgba(255,255,255,0.05));
-    filter: blur(1px);
-    animation: float 10s ease-in-out infinite;
-  }
-  @keyframes float {
-    0%, 100% { transform: translateY(0) translateX(0); }
-    50% { transform: translateY(-30px) translateX(10px); }
+  #fundo-particulas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
   }
 
   .logo-vidro {
@@ -231,10 +220,7 @@
 </style>
 </head>
 <body>
-  <div class="drop" style="width:60px;height:60px;top:10%;left:15%;animation-delay:0s;"></div>
-  <div class="drop" style="width:30px;height:30px;top:70%;left:80%;animation-delay:2s;"></div>
-  <div class="drop" style="width:45px;height:45px;top:80%;left:20%;animation-delay:4s;"></div>
-  <div class="drop" style="width:20px;height:20px;top:20%;left:75%;animation-delay:1s;"></div>
+  <canvas id="fundo-particulas"></canvas>
 
   <div class="logo-vidro"><span>Glowygg</span></div>
 
@@ -275,6 +261,59 @@
 
     <p class="footer-text" id="footer-text">Não tem conta? <a id="toggle-mode">Criar conta</a></p>
   </div>
+
+<script>
+  // Fundo de partículas bioluminescentes
+  const canvasFundo = document.getElementById('fundo-particulas');
+  const ctxFundo = canvasFundo.getContext('2d');
+  let particulas = [];
+
+  function redimensionar() {
+    canvasFundo.width = window.innerWidth;
+    canvasFundo.height = window.innerHeight;
+  }
+  window.addEventListener('resize', redimensionar);
+  redimensionar();
+
+  const CORES = ['#00E5FF', '#FF007A', '#17828d'];
+  for (let i = 0; i < 70; i++) {
+    particulas.push({
+      x: Math.random() * canvasFundo.width,
+      y: Math.random() * canvasFundo.height,
+      r: Math.random() * 1.8 + 0.6,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25,
+      cor: CORES[Math.floor(Math.random() * CORES.length)],
+      alpha: Math.random() * 0.5 + 0.3
+    });
+  }
+
+  function desenharFundo() {
+    ctxFundo.clearRect(0, 0, canvasFundo.width, canvasFundo.height);
+    particulas.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0) p.x = canvasFundo.width;
+      if (p.x > canvasFundo.width) p.x = 0;
+      if (p.y < 0) p.y = canvasFundo.height;
+      if (p.y > canvasFundo.height) p.y = 0;
+
+      ctxFundo.beginPath();
+      ctxFundo.arc(p.x, p.y, p.r * 2.5, 0, Math.PI * 2);
+      ctxFundo.fillStyle = p.cor + '22';
+      ctxFundo.fill();
+
+      ctxFundo.beginPath();
+      ctxFundo.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctxFundo.globalAlpha = p.alpha;
+      ctxFundo.fillStyle = p.cor;
+      ctxFundo.fill();
+      ctxFundo.globalAlpha = 1;
+    });
+    requestAnimationFrame(desenharFundo);
+  }
+  desenharFundo();
+</script>
 
 <script>
   const SUPABASE_URL = 'https://uupqiqxsnwwzspqhyalq.supabase.co';
@@ -392,4 +431,4 @@
   });
 </script>
 </body>
-</html>
+  </html>
