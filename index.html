@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Entrar na Glowy — sua rotina de pele</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
     --teal-deep: #0e4f57;
@@ -120,6 +121,11 @@
     transform: translateY(-2px);
     box-shadow: 0 12px 26px rgba(14,79,87,0.45);
   }
+  .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
   .divider {
     display: flex;
     align-items: center;
@@ -157,7 +163,16 @@
     color: var(--gold);
     font-weight: 600;
     text-decoration: none;
+    cursor: pointer;
   }
+  .msg {
+    text-align: center;
+    font-size: 0.85rem;
+    margin-top: 14px;
+    min-height: 18px;
+  }
+  .msg.error { color: #c0392b; }
+  .msg.success { color: #1e824c; }
 </style>
 </head>
 <body>
@@ -184,31 +199,103 @@
       </svg>
     </div>
     <div class="logo"><span>Glowy</span></div>
-    <p class="subtitle">Bem-vindo à sua melhor pele</p>
+    <p class="subtitle" id="subtitle">Bem-vindo à sua melhor pele</p>
 
-    <form>
+    <form id="auth-form">
       <label for="email">E-mail</label>
-      <input type="email" id="email" placeholder="voce@email.com">
+      <input type="email" id="email" placeholder="voce@email.com" required>
 
       <label for="senha">Senha</label>
-      <input type="password" id="senha" placeholder="••••••••">
+      <input type="password" id="senha" placeholder="••••••••" required minlength="6">
 
-      <button type="submit" class="btn-primary">Entrar na Glowy</button>
+      <button type="submit" class="btn-primary" id="btn-submit">Entrar na Glowy</button>
     </form>
 
-    <div class="divider"><span>ou</span></div>
-    <button class="btn-google">Continuar com Google</button>
+    <p class="msg" id="msg"></p>
 
-    <p class="footer-text">Não tem conta? <a href="#">Criar conta</a></p>
+    <div class="divider"><span>ou</span></div>
+    <button class="btn-google" id="btn-google">Continuar com Google</button>
+
+    <p class="footer-text" id="footer-text">Não tem conta? <a id="toggle-mode">Criar conta</a></p>
   </div>
 
 <script>
+  const SUPABASE_URL = 'https://uupqiqxsnwwzspqhyalq.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1cHFpcXhzbnd3enNwcWh5YWxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MTg5MzcsImV4cCI6MjEwMzE5NDkzN30.RZX7e6QaR9lCEwaxWXJZzxJyUkbjC6rPubpQyI7ln5o';
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let modoCadastro = false;
+
+  const form = document.getElementById('auth-form');
+  const emailInput = document.getElementById('email');
+  const senhaInput = document.getElementById('senha');
+  const btnSubmit = document.getElementById('btn-submit');
+  const msg = document.getElementById('msg');
+  const footerText = document.getElementById('footer-text');
+  const subtitle = document.getElementById('subtitle');
+
+  function mostrarMensagem(texto, tipo) {
+    msg.textContent = texto;
+    msg.className = 'msg ' + tipo;
+  }
+
+  footerText.addEventListener('click', (e) => {
+    if (e.target.tagName !== 'A') return;
+    e.preventDefault();
+    modoCadastro = !modoCadastro;
+    msg.textContent = '';
+    if (modoCadastro) {
+      btnSubmit.textContent = 'Criar minha conta';
+      subtitle.textContent = 'Vamos começar sua rotina';
+      footerText.innerHTML = 'Já tem conta? <a id="toggle-mode">Entrar</a>';
+    } else {
+      btnSubmit.textContent = 'Entrar na Glowy';
+      subtitle.textContent = 'Bem-vindo à sua melhor pele';
+      footerText.innerHTML = 'Não tem conta? <a id="toggle-mode">Criar conta</a>';
+    }
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = emailInput.value.trim();
+    const senha = senhaInput.value;
+
+    if (!email || !senha) {
+      mostrarMensagem('Preencha e-mail e senha.', 'error');
+      return;
+    }
+    if (senha.length < 6) {
+      mostrarMensagem('A senha precisa ter pelo menos 6 caracteres.', 'error');
+      return;
+    }
+
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = modoCadastro ? 'Criando conta...' : 'Entrando...';
+    msg.textContent = '';
+
+    try {
+      if (modoCadastro) {
+        const { data, error } = await supabaseClient.auth.signUp({ email, password: senha });
+        if (error) throw error;
+        mostrarMensagem('Conta criada! Você já pode entrar.', 'success');
+      } else {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: senha });
+        if (error) throw error;
+        mostrarMensagem('Login feito com sucesso!', 'success');
+      }
+    } catch (err) {
+      mostrarMensagem(err.message || 'Algo deu errado. Tente de novo.', 'error');
+    } finally {
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = modoCadastro ? 'Criar minha conta' : 'Entrar na Glowy';
+    }
+  });
+
   const pupilaEsq = document.getElementById('pupila-esq');
   const pupilaDir = document.getElementById('pupila-dir');
   const maoEsq = document.getElementById('mao-esq');
   const maoDir = document.getElementById('mao-dir');
   const svg = document.getElementById('mascote-svg');
-  const senhaInput = document.getElementById('senha');
 
   document.addEventListener('mousemove', (e) => {
     const rect = svg.getBoundingClientRect();
