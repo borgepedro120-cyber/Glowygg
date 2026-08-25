@@ -277,11 +277,16 @@
       if (modoCadastro) {
         const { data, error } = await supabaseClient.auth.signUp({ email, password: senha });
         if (error) throw error;
-        mostrarMensagem('Conta criada! Você já pode entrar.', 'success');
+        mostrarMensagem('Conta criada! Redirecionando...', 'success');
+        setTimeout(() => { window.location.href = 'onboarding.html'; }, 1000);
       } else {
         const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: senha });
         if (error) throw error;
         mostrarMensagem('Login feito com sucesso!', 'success');
+        const concluiu = data.user?.user_metadata?.onboarding_concluido;
+        setTimeout(() => {
+          window.location.href = concluiu ? 'dashboard.html' : 'onboarding.html';
+        }, 800);
       }
     } catch (err) {
       mostrarMensagem(err.message || 'Algo deu errado. Tente de novo.', 'error');
