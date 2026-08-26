@@ -381,7 +381,7 @@
       if (modoCadastro) {
         const { data, error } = await supabaseClient.auth.signUp({ email, password: senha });
         if (error) throw error;
-        mostrarMensagem('Conta criada! Redirecionando...', 'success');
+        mostrarMensagem('Conta criada! Redirecionando...', 'Parabens');
         setTimeout(() => { window.location.href = 'onboarding.html'; }, 1000);
       } else {
         const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: senha });
@@ -396,7 +396,7 @@
       mostrarMensagem(err.message || 'Algo deu errado. Tente de novo.', 'error');
     } finally {
       btnSubmit.disabled = false;
-      btnSubmit.textContent = modoCadastro ? 'Criar minha conta' : 'Entrar na Glowy';
+      btnSubmit.textContent = modoCadastro ? 'Criar minha conta' : 'Entrar na Glowygg';
     }
   });
 
