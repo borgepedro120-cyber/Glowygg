@@ -8,9 +8,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
-    --teal-deep: #0e4f57;
-    --teal-mid: #17828d;
-    --gold: #d4a24c;
+    --azul: #17c3e6;
+    --roxo-rosa: #b8298f;
+    --rosa: #ff2d87;
   }
   * { box-sizing: border-box; }
   body {
@@ -36,7 +36,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: var(--teal-mid);
+    color: var(--rosa);
     font-size: 0.78rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -66,7 +66,7 @@
     padding: 6px 14px;
     border-radius: 20px;
   }
-  .tag-nivel { background: #dcefe6; color: #1e6b4d; }
+  .tag-nivel { background: #fde3f0; color: #b8298f; }
   .tag-tempo { background: #ece7dc; color: #6b6656; }
   .descricao {
     color: #55503f;
@@ -81,7 +81,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: var(--teal-mid);
+    color: var(--rosa);
     margin: 28px 0 14px;
   }
   .card-passo {
@@ -101,8 +101,8 @@
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: #dcefe6;
-    color: #1e6b4d;
+    background: #fde3f0;
+    color: #b8298f;
     font-weight: 700;
     font-size: 0.9rem;
     display: flex;
@@ -147,7 +147,7 @@
     position: fixed;
     bottom: 24px;
     right: 24px;
-    background: var(--teal-deep);
+    background: var(--roxo-rosa);
     color: #fff;
     border: none;
     border-radius: 50px;
@@ -176,6 +176,8 @@
 
     <div class="miolo">
       <a class="voltar" href="sobre.html">← Sobre a Glowy</a>
+      <a class="voltar" href="biblioteca.html" style="float:right;">Biblioteca de dicas →</a>
+      <div style="clear:both;"></div>
       <h1 class="titulo" id="titulo-rotina">Sua rotina personalizada</h1>
       <div class="tags">
         <span class="tag tag-nivel" id="tag-nivel">Nível</span>
