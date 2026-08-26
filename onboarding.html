@@ -8,17 +8,17 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
-    --teal-deep: #0e4f57;
-    --teal-mid: #17828d;
+    --azul: #17c3e6;
+    --roxo-rosa: #b8298f;
+    --rosa: #ff2d87;
     --cream: #fdfaf4;
-    --gold: #d4a24c;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
     min-height: 100vh;
     font-family: 'Inter', sans-serif;
-    background: radial-gradient(circle at 20% 20%, #1a6b74, var(--teal-deep) 60%);
+    background: linear-gradient(150deg, var(--azul) 0%, var(--roxo-rosa) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -60,7 +60,7 @@
     background: #e5ddc9;
     transition: background 0.3s;
   }
-  .progress span.done { background: var(--gold); }
+  .progress span.done { background: var(--rosa); }
   .step { display: none; animation: fadeIn 0.4s ease; }
   .step.active { display: block; }
   @keyframes fadeIn {
@@ -71,7 +71,7 @@
     font-family: 'Fraunces', serif;
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--teal-deep);
+    color: var(--roxo-rosa);
     margin: 0 0 6px;
   }
   .step p.hint {
@@ -97,10 +97,10 @@
     color: #3a352c;
     transition: border-color 0.2s, background 0.2s;
   }
-  .opcao:hover { border-color: var(--gold); }
+  .opcao:hover { border-color: var(--rosa); }
   .opcao.selecionada {
-    border-color: var(--teal-mid);
-    background: rgba(23,130,141,0.08);
+    border-color: var(--rosa);
+    background: rgba(255,45,135,0.08);
   }
   .opcao .emoji { font-size: 1.3rem; }
   .btn-nav {
@@ -112,7 +112,7 @@
   .btn-primary {
     flex: 1;
     padding: 14px;
-    background: linear-gradient(135deg, var(--teal-mid), var(--teal-deep));
+    background: linear-gradient(135deg, var(--azul), var(--rosa));
     color: #fff;
     border: none;
     border-radius: 30px;
@@ -120,7 +120,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 8px 20px rgba(14,79,87,0.35);
+    box-shadow: 0 8px 20px rgba(184,41,143,0.35);
   }
   .btn-primary:hover { transform: translateY(-2px); }
   .btn-primary:disabled {
@@ -307,4 +307,4 @@
   });
 </script>
 </body>
-</html>
+  </html>
